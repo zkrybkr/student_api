@@ -1,0 +1,32 @@
+# version: "3.8"
+
+services:
+  timescaledb:
+    image: timescale/timescaledb-ha:pg17
+    restart: always
+    volumes: 
+      - ./data/db:/var/lib/postgresql/data
+      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=student_api
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+
+# services:
+#   postgrsql_db:
+#     image: postgres:17
+#     restart: always
+#     volumes: 
+#       - ./data/db:/var/lib/postgresql/data
+#       - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+#       - ./sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
+#     ports:
+#       - "5433:5432"
+#     environment:
+#       - POSTGRES_DB=student_api
+#       - POSTGRES_USER=postgres
+#       - POSTGRES_PASSWORD=postgres
