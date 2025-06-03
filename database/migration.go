@@ -1,4 +1,4 @@
-package config
+package database
 
 import (
 	"context"
@@ -29,4 +29,17 @@ func ConnectDB() {
 	}
 
 	DB = pool
+}
+
+func CreateDBPool() (*pgxpool.Pool, error) {
+	pool, err := OpenDBConnection("")
+	if err != nil {
+		return nil, err
+	}
+	return pool, nil
+}
+
+func OpenDBConnection(dbURL string) (*pgxpool.Pool, error) {
+
+	return nil, nil
 }
