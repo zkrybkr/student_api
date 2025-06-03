@@ -6,5 +6,7 @@ func RunDB() error {
 		return err
 	}
 
+	InitDBEngine(pool)
+
 	return nil
 }
