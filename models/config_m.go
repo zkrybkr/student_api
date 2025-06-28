@@ -6,6 +6,8 @@ type DBServerConfigEnv struct {
 	Host     string
 	Port     string
 	DBName   string
+	Driver   string
+	Url      string
 }
 
 type WebServerConfigEnv struct {

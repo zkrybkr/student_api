@@ -25,7 +25,7 @@ func InitDBEngine(pool *pgxpool.Pool) {
 
 func CreateDBPool() (*pgxpool.Pool, error) {
 	dbEnv := c.GetDBServerEnv()
-	url := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", dbEnv.Username, dbEnv.Password, dbEnv.Host, dbEnv.Port, dbEnv.DBName)
+	url := fmt.Sprintf(dbEnv.Url, dbEnv.Driver, dbEnv.Username, dbEnv.Password, dbEnv.Host, dbEnv.Port, dbEnv.DBName)
 
 	config, err := pgxpool.ParseConfig(url)
 	if err != nil {
