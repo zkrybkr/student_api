@@ -28,7 +28,7 @@ func GetDBServerEnv() m.DBServerConfigEnv {
 }
 
 func GetWebServerEnv() m.WebServerConfigEnv {
-	webConfigEnv := reflect.ValueOf(web_server_env).Elem()
+	webConfigEnv := reflect.ValueOf(web_server_env).Elem() //TODO: map[string]string daha performanslı olur buna dönüştürülecek
 
 	for i := 0; i < webConfigEnv.NumField(); i++ {
 		fieldValue := webConfigEnv.Field(i)
@@ -87,6 +87,8 @@ func InitDbServerConfig() {
 		Username: os.Getenv("DB_USER"),
 		Password: os.Getenv("DB_PASSWORD"),
 		DBName:   os.Getenv("DB_NAME"),
+		Url:      os.Getenv("DB_URL"),
+		Driver:   os.Getenv("DB_DRIVER"),
 	}
 
 	db_server_env = &externalEnv

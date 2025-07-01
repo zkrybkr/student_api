@@ -10,21 +10,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var users []m.User = []m.User{}
+var users []m.User
 
-func ListUsers(ctx *gin.Context){
+func ListUsers(ctx *gin.Context) {
 	rows, err := d.DBEngine.Pool.Query(context.Background(), "SELECT * FROM users")
 	if err != nil {
 		log.Println("DB sorgu hatası: ", err)
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error":"DB hatası"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "DB hatası"})
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		user := m.User{}
-		if err := rows.Scan(&user.Id, &user.Name, &user.Surname, &user.Email, &user.RoleId); err != nil {
+		if err := rows.Scan(&user.Id, &user.Name, &user.Surname, &user.Username, &user.Email, &user.RoleId); err != nil {
 			log.Println("Okuma hatası", err)
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error":"Veri okuma hatası"})
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Veri okuma hatası"})
 			return
 		}
 
@@ -33,6 +33,6 @@ func ListUsers(ctx *gin.Context){
 	ctx.JSON(http.StatusOK, users)
 }
 
-func CreateUser(ctx *gin.Context){
-	
+func CreateUser(ctx *gin.Context) {
+
 }
