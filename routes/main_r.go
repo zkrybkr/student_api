@@ -16,5 +16,5 @@ func MainRouter(router *gin.Engine) {
 	config.AllowCredentials = true
 
 	router.Use(cors.New(config))
-	
+	UserRouter(router.Group("/api/v1"))
 }

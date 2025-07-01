@@ -6,8 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoute(router *gin.Engine) {
-	v1 := router.Group("/api/v1")
-	v1.GET("/user", c.ListUsers)
-	v1.POST("/user", c.CreateUser)
+func UserRouter(r *gin.RouterGroup) {
+
+	r.GET("/user", c.ListUsers)
+
+	r.POST("/user/add", c.CreateUser)
+	
 }
