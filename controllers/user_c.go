@@ -14,7 +14,8 @@ import (
 
 func ListUsers(ctx *gin.Context) {
 	var users []m.User
-	rows, err := d.DBEngine.Pool.Query(context.Background(), "SELECT * FROM users")
+	query := "SELECT * FROM users"
+	rows, err := d.DBEngine.Pool.Query(context.Background(), query)
 	if err != nil {
 		log.Println("DB sorgu hatası: ", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "DB hatası"})
@@ -53,7 +54,6 @@ func CreateUser(ctx *gin.Context) {
 	insertQuery := `
 		INSERT INTO users (ID, name, surname, username, email, roleID) 
 		VALUES ($1, $2, $3, $4, $5, $6)
-		RETURNING ID
 	`
 	userID := uuid.New()
 	_, err := d.DBEngine.Pool.Exec(
