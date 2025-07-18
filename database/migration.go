@@ -2,40 +2,53 @@ package database
 
 import (
 	"context"
-	"fmt"
-	"log"
+	"errors"
 	c "studentApi/config"
-
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type DBPool struct {
-	Pool *pgxpool.Pool
+func (db *DBConnData) tableExists(tableName string) (exists bool, err error) {
+	if err = db.Pool.QueryRow(context.Background(), c.GetDBSQL().TableSelectSQL, tableName).Scan(&exists); err != nil {
+		err = errors.New("tablo kontrol hatası, tablo adı: " + tableName)
+		return
+	}
+	return
 }
 
-var DBEngine *DBPool
-
-func InitDBEngine(pool *pgxpool.Pool) {
-	if pool == nil {
-		log.Fatal("Database connection is nil! Check GetDBPool function...")
+func (db *DBConnData) CreateTable(query, tableName string) error {
+	exit, err := DBConn.tableExists(tableName)
+	if err != nil {
+		return err
 	}
 
-	DBEngine = &DBPool{Pool: pool}
+	if exit {
+		return errors.New("Tablo zaten mevcut, tablo adı: " + tableName)
+	}
+
+	if _, err = db.Pool.Exec(context.Background(), query); err != nil {
+		return errors.New("Tablo oluşturulurken hata oluştu, tablo adı: " + tableName)
+	} else {
+		exit, err = DBConn.tableExists(tableName)
+		if err != nil {
+			return err
+		}
+
+		if !exit {
+			return errors.New("Oluşturulan tablo bulunamadı, tablo adı: " + tableName)
+		}
+	}
+
+	return nil
 }
 
-func CreateDBPool() (*pgxpool.Pool, error) {
-	dbEnv := c.GetDBServerEnv()
-	url := fmt.Sprintf(dbEnv.Url, dbEnv.Driver, dbEnv.Username, dbEnv.Password, dbEnv.Host, dbEnv.Port, dbEnv.DBName)
-
-	config, err := pgxpool.ParseConfig(url)
-	if err != nil {
-		return nil, fmt.Errorf("veritabanı bağlantı URL'si parse edilirken hata oluştu: %v", err)
+func RunMigration() (err error) {
+	dbSQL := c.GetDBSQL()
+	if err = DBConn.CreateTable(dbSQL.TableCreateUsersSQL, dbSQL.TableUsersName); err != nil {
+		return err
 	}
 
-	pool, err := pgxpool.NewWithConfig(context.Background(), config)
-	if err != nil {
-		return nil, fmt.Errorf("veritabanına bağlanırken hata oluştu: %v", err)
+	if err = DBConn.CreateTable(dbSQL.TableCreateRolesSQL, dbSQL.TableRolesName); err != nil {
+		return err
 	}
 
-	return pool, nil
+	return nil
 }

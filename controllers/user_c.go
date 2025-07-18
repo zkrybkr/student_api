@@ -11,7 +11,6 @@ import (
 	"github.com/google/uuid"
 )
 
-
 func ListUsers(ctx *gin.Context) {
 	var users []m.User
 	query := "SELECT * FROM users"
@@ -40,14 +39,14 @@ func CreateUser(ctx *gin.Context) {
 	user := m.InsertUserRequest{}
 
 	if err := ctx.ShouldBindJSON(&user); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error":"Geçersiz istek! Eksik veya hatalı alan var"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Geçersiz istek! Eksik veya hatalı alan var"})
 		return
 	}
 
 	var roleID uuid.UUID
 	roleIdQuery := `SELECT ID FROM roles WHERE role_name = $1`
 	if err := d.DBEngine.Pool.QueryRow(context.Background(), roleIdQuery, user.RoleName).Scan(&roleID); err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error":"Belirtilen rol bulunamadı"})
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Belirtilen rol bulunamadı"})
 		return
 	}
 
@@ -57,11 +56,11 @@ func CreateUser(ctx *gin.Context) {
 	`
 	userID := uuid.New()
 	_, err := d.DBEngine.Pool.Exec(
-		context.Background(), 
-		insertQuery, 
+		context.Background(),
+		insertQuery,
 		userID,
 		user.Name,
-		user.Surname, 
+		user.Surname,
 		user.Username,
 		user.Email,
 		roleID,
@@ -69,17 +68,17 @@ func CreateUser(ctx *gin.Context) {
 
 	if err != nil {
 		log.Println("Kullanıcı ekleme hatası:", err)
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error":"Kullanıcı eklenemedi"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Kullanıcı eklenemedi"})
 		return
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
-		"id" : userID,
-		"name" : user.Name,
-		"surname" : user.Surname, 
-		"username" : user.Username,
-		"email" : user.Email,
-		"role_id" : roleID,
-		"role_name" : user.RoleName,
+		"id":        userID,
+		"name":      user.Name,
+		"surname":   user.Surname,
+		"username":  user.Username,
+		"email":     user.Email,
+		"role_id":   roleID,
+		"role_name": user.RoleName,
 	})
 }

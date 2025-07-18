@@ -1,12 +1,14 @@
 package database
 
-func RunDB() error {
-	pool, err := CreateDBPool()
-	if err != nil {
-		return err
+func RunDB() (err error) {
+
+	if err = createDBPool(); err != nil {
+		return
 	}
 
-	InitDBEngine(pool)
+	if err = RunMigration(); err != nil {
+		return
+	}
 
 	return nil
 }

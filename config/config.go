@@ -9,10 +9,12 @@ import (
 	m "studentApi/models"
 
 	"github.com/joho/godotenv"
+	"gopkg.in/yaml.v3"
 )
 
 var web_server_env *m.WebServerConfigEnv = &m.WebServerConfigEnv{}
 var db_server_env *m.DBServerConfigEnv = &m.DBServerConfigEnv{}
+var sqlYamlData *m.SQLYamlData
 
 func GetDBServerEnv() m.DBServerConfigEnv {
 	dbConfigEnv := reflect.ValueOf(db_server_env).Elem()
@@ -41,6 +43,10 @@ func GetWebServerEnv() m.WebServerConfigEnv {
 	return *web_server_env
 }
 
+func GetDBSQL() m.SQLYamlData {
+	return *sqlYamlData
+}
+
 func InitConfig(configType ...string) error {
 	dir, err := os.Getwd()
 	if err != nil {
@@ -61,11 +67,39 @@ func InitConfig(configType ...string) error {
 			InitWebServerConfig()
 		case "db_server_config":
 			InitDbServerConfig()
+		case "db_sql_yaml":
+			InitDBSQLYaml()
 		default:
 			log.Println("belirsiz config type...")
 		}
 	}
 
+	return nil
+}
+
+// input olarak proje dizinindeki yeri belirtilir
+func GetRootFilePath(relativePath string) (string, error) {
+	rootPath, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(rootPath, relativePath), nil
+}
+
+func InitDBSQLYaml() error {
+	fullPath, err := GetRootFilePath("environment/db_sql_env.yaml")
+	if err != nil {
+		return err
+	}
+
+	rawYamlFile, err := os.ReadFile(fullPath)
+	if err != nil {
+		return err
+	}
+
+	if err := yaml.Unmarshal(rawYamlFile, sqlYamlData); err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -1,0 +1,31 @@
+#UUID extension'ı aktif et
+add_uuid_extension_sql: |
+  CREATE EXTENSION "uuid-ossp";
+
+#ROLES tablosu
+table_roles_name: users
+table_create_roles_sql: |
+  CREATE TABLE roles (
+      ID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      role_name VARCHAR(45) NOT NULL
+  );
+
+#USERS tablosu
+table_users_name: users
+table_create_users_sql: |
+  CREATE TABLE users (
+      ID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      name VARCHAR(45) NOT NULL,
+      surname VARCHAR(45) NOT NULL,
+      username VARCHAR(45) NOT NULL,
+      email VARCHAR(45) NOT NULL,
+      roleID UUID REFERENCES roles(ID)
+  );
+  
+table_select_sql: |
+  SELECT EXISTS (
+    SELECT 1
+    FROM information_schema.tables
+    WHERE table_schema = 'public'
+    AND table_name = $1
+  );
