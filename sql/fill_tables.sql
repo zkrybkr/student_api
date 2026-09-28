@@ -5,7 +5,7 @@ VALUES
 
 INSERT INTO users (name, surname, username, email, roleID) 
 VALUES 
-    ('Melis', 'Verici', 'meliver', 'vericimels@hotmail.com', (SELECT ID FROM roles WHERE role_name = 'teacher')), 
+    ('Melis', 'Derici', 'melider', 'dericimels@hotmail.com', (SELECT ID FROM roles WHERE role_name = 'teacher')), 
     ('Ali', 'Kemal', 'ali.kemal', 'akemal01@gmail.com', (SELECT ID FROM roles WHERE role_name = 'teacher')),
     ('Abuzer', 'Kadayıf', 'abukada', 'abuzerkadayif@gmail.com', (SELECT ID FROM roles WHERE role_name = 'student')), 
     ('Meltem', 'Sever', 'melosev', 'melosev@gmail.com', (SELECT ID FROM roles WHERE role_name = 'student')), 

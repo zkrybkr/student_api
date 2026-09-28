@@ -48,13 +48,10 @@ func GetDBSQL() m.SQLYamlData {
 }
 
 func InitConfig(configType ...string) error {
-	dir, err := os.Getwd()
+	envPath, err := GetRootFilePath("environment/.env")
 	if err != nil {
-		log.Println(err)
 		return err
 	}
-
-	envPath := filepath.Join(dir, "environment", ".env")
 
 	if err := godotenv.Load(envPath); err != nil {
 		log.Println(".env dosyası yüklenirken hata oluştu.")

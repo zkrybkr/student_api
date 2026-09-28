@@ -3,7 +3,7 @@ add_uuid_extension_sql: |
   CREATE EXTENSION "uuid-ossp";
 
 #ROLES tablosu
-table_roles_name: users
+table_roles_name: roles
 table_create_roles_sql: |
   CREATE TABLE roles (
       ID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
